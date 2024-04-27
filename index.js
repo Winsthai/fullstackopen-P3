@@ -55,6 +55,23 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
+app.post('/api/persons', (request, response) => {
+    const min = 1       // Min id is 1
+    const max = 1000    // Max id is 1000
+    const minCeiled = Math.ceil(min);
+    const maxFloored = Math.floor(max);
+    const id = Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled)
+
+    // Get random id that has not been taken yet
+    while (data.includes(person => person.id === id)) {
+        id = Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled)
+    }
+
+    const body = request.body
+
+    response.json(body)
+})
+
 const PORT = 3001
 app.listen(PORT)
 console.log(`Server running on port ${PORT}`)

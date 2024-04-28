@@ -86,8 +86,6 @@ app.post('/api/persons', (request, response) => {
 
     const body = request.body
 
-    console.log(body.name)
-
     if (!body.number || !body.name) {
         return response.status(400).json( {
             error: 'name or number of person is missing'

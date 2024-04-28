@@ -2,7 +2,21 @@ const express = require('express')
 const morgan = require('morgan')
 const app = express()
 app.use(express.json())
-app.use(morgan('tiny'))
+
+morgan.token('body', (req, res) => { return JSON.stringify(req.body) })
+
+const logger = morgan((tokens, request, response) => {
+    return [
+        tokens.method(request, response),
+        tokens.url(request, response),
+        tokens.status(request, response),
+        tokens.res(request, response, 'content-length'), '-',
+        tokens['response-time'](request, response), 'ms',
+        tokens.body(request, response)
+    ].join(' ')
+})
+
+app.use(logger)
 
 let data = [
     { 

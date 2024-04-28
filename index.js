@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+app.use(express.json())
 
 let data = [
     { 
@@ -68,6 +69,9 @@ app.post('/api/persons', (request, response) => {
     }
 
     const body = request.body
+
+    console.log(request.headers)
+    console.log(body)
 
     if (!body.number || !body.name) {
         return response.status(400).json( {

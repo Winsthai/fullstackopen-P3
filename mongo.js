@@ -1,3 +1,4 @@
+// MOCK file to sketch out MongoDB database example services
 const mongoose = require('mongoose')
 
 if ( !(process.argv.length == 3 || process.argv.length == 5) ) {

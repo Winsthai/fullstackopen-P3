@@ -62,14 +62,9 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = data.find(person => person.id === Number(id))
-
-    if (person) {
+    Person.findById(request.params.id).then(person => {
         response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -97,21 +92,21 @@ app.post('/api/persons', (request, response) => {
         return response.status(400).json( {
             error: 'name or number of person is missing'
         })
-    } else if (data.some(person => person.name === body.name)) {
+    } /* else if (checkNameExists(body.name)) {
         return response.status(400).json( {
             error: 'name of the person must be unique; it already exists'
         })
-    }
+    } */
 
-    const person = {
-        id: id,
+    const newPerson = new Person({
+        id: "",
         name: body.name,
         number: body.number
-    }
+    })
 
-    data = data.concat(person)
-
-    response.json(person)
+    newPerson.save().then(result => {
+        response.json(newPerson)
+    })
 })
 
 const PORT = process.env.PORT

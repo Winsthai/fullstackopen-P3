@@ -68,7 +68,8 @@ app.get('/api/persons/:id', (request, response, next) => {
         } else {
             response.status(404).end()
         }
-    }).catch(error => next(error))
+    })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
@@ -79,16 +80,6 @@ app.delete('/api/persons/:id', (request, response, next) => {
 })
 
 app.post('/api/persons', (request, response) => {
-    const min = 1       // Min id is 1
-    const max = 1000    // Max id is 1000
-    const minCeiled = Math.ceil(min);
-    const maxFloored = Math.floor(max);
-    const id = Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled)
-
-    // Get random id that has not been taken yet
-    while (data.includes(person => person.id === id)) {
-        id = Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled)
-    }
 
     const body = request.body
 
@@ -96,14 +87,9 @@ app.post('/api/persons', (request, response) => {
         return response.status(400).json( {
             error: 'name or number of person is missing'
         })
-    } /* else if (checkNameExists(body.name)) {
-        return response.status(400).json( {
-            error: 'name of the person must be unique; it already exists'
-        })
-    } */
+    } 
 
     const newPerson = new Person({
-        id: "",
         name: body.name,
         number: body.number
     })
@@ -111,6 +97,21 @@ app.post('/api/persons', (request, response) => {
     newPerson.save().then(result => {
         response.json(newPerson)
     })
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+    
+    const body = request.body
+
+    const person = {
+        name: body.name,
+        number: body.number
+    }
+
+    Person.findByIdAndUpdate(request.params.id, person, {new: true}).then(updatedPerson => {
+        response.json(updatedPerson)
+    })
+    .catch(error => next(error))
 })
 
 // Add error handling middleware
